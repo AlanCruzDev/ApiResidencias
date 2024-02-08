@@ -28,36 +28,35 @@ public class ModuloRepositoryQuery {
 	@Transactional(readOnly = true)
 	public List<ModuloPermisosDTO> obtenerModulosByUsuario(Integer idUsuario){
 		Gson gson = new Gson();
-		System.out.println("ID Usuario: "+ idUsuario);
 		
-		String sql ="SELECT idModulo, nombre, JSON_ARRAYAGG(autorizacion) AS Autorizacion	" + 
-				"	FROM ( 	" + 
-				"    SELECT	" + 
-				"        m.idModulo,	" + 
-				"        m.nombre,		" + 
-				"        (	SELECT		" + 
-				"            JSON_OBJECT(		" + 
-				"            'id' VALUE a.idAutorizacion,	" + 
-				"            'nombre' VALUE a.nombre)       " + 
-				"            FROM Autorizacion a			" + 
-				"            WHERE a.idAutorizacion = p.idAutorizacion		" + 
-				"        ) 	AS autorizacion		" +  
-				"    FROM Modulo m		" + 
-				"    INNER JOIN PerfilPermisos p ON p.idModulo = m.idModulo		" + 
-				"    WHERE p.idUsuario =:idUsuario and p.status = 1		" + 
-				"	)		" + 
-				"GROUP BY idModulo, nombre		";
+		String sql ="SELECT idModulo, nombre, JSON_ARRAYAGG(autorizacion) AS Autorizacion\r\n" + 
+				"FROM (\r\n" + 
+				"    SELECT\r\n" + 
+				"        m.idModulo,\r\n" + 
+				"        m.nombre,\r\n" + 
+				"        (SELECT \r\n" + 
+				"            JSON_OBJECT(\r\n" + 
+				"            'id' VALUE a.idAutorizacion,\r\n" + 
+				"            'nombre' VALUE a.nombre)       \r\n" + 
+				"            FROM Autorizacion a \r\n" + 
+				"            WHERE a.idAutorizacion = p.idAutorizacion\r\n" + 
+				"        ) AS autorizacion\r\n" + 
+				"    \r\n" + 
+				"    FROM Modulo m\r\n" + 
+				"    INNER JOIN PerfilPermisos p ON p.idModulo = m.idModulo\r\n" + 
+				"    WHERE p.idUsuario =:idUsuario and p.status = 1\r\n" + 
+				")\r\n" + 
+				"GROUP BY idModulo, nombre";
+		
 		Query q = em.createNativeQuery(sql);
 		q.setParameter("idUsuario", idUsuario);
 		List<Object[]> data =(List<Object[]>) q.getResultList();
 		List<ModuloPermisosDTO> permisosDTOs = new ArrayList<ModuloPermisosDTO>();
-		System.out.println("data; "+ data.size());
-		
 		for(Object[] result: data) {
 			ModuloPermisosDTO permisosDTO = new ModuloPermisosDTO();
 			permisosDTO.setIdModulo(((BigDecimal) result[0]).intValue());
 			permisosDTO.setNombre(result[1].toString());
-			String jsonArrayAsString =(String) result[3];
+			String jsonArrayAsString =(String) result[2];
 			List<Autorizacion> autorizaciones = gson.fromJson(jsonArrayAsString, new TypeToken<List<Autorizacion>>() {}.getType());
 			permisosDTO.setAutorizaciones(autorizaciones);
 			permisosDTOs.add(permisosDTO);	
