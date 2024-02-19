@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,9 @@ public class UsuarioController {
 	
 	@Autowired
 	private IUsuarioServiceQuery usuarioQueryService;
+	
+	@Autowired
+	private SseController sseController;
 	
 	
 	@Autowired
@@ -48,5 +53,14 @@ public class UsuarioController {
 		}
 		return usuarioWrite.registrarUsuariosByExcel(file);
 	}
+	
+	@GetMapping("/login/{usuario}/{contra}")
+	public ResponseEntity<Usuario> loginUsuario(@PathVariable("usuario") String usuario, @PathVariable("contra")String contra) {
+		Usuario user = usuarioQueryService.logearUsuario(usuario, contra);
+		 sseController.sendLoginNotification(user);
+		 return new ResponseEntity<Usuario>(user, HttpStatus.OK);
+	}
+	
+	
 
 }

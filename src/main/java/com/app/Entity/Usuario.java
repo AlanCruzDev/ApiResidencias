@@ -3,6 +3,7 @@ package com.app.Entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -13,10 +14,16 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@Column(name = "id")
 	private Integer id;
+	
+	@Column(name = "nombre")
 	private String nombre;
+	
 	private String apellidopaterno;
 	private String apellidomaterno;
+	
+	@Column(name = "matricula")
 	private String matricula;
 	private String contrasenia;
 	private Integer status;

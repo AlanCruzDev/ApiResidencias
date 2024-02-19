@@ -25,6 +25,8 @@ public class RepositoryWriteImpl implements IReporteWritw {
 				PreguntaPrincipalDTO principalDTO = cuestionario.get(i);
 				for(int j=0; j<principalDTO.getHijasDTOs().size(); j++) {
 					PreguntasHijasDTO hijasDTO = principalDTO.getHijasDTOs().get(j);	
+					
+					
 					if(hijasDTO.getIdTipo().intValue() != 4) {
 						int response = oracleFunction.guardar_respuesta_usuario(hijasDTO.getIdPreguntaHija().intValue(), idUsuario, hijasDTO.getRespuestaUsuario());
 					}else {
@@ -38,6 +40,8 @@ public class RepositoryWriteImpl implements IReporteWritw {
 									proyectoDTO.getIdPreguntaHija());				
 						}
 					}
+					
+					
 				}
 				
 			}
