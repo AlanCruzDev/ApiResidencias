@@ -1,5 +1,6 @@
 package com.app.Services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +40,27 @@ public class UsuarioServiceQueryImpl  implements IUsuarioServiceQuery{
 			}
 			return usuario;
 		}
+		return null;
+	}
+
+
+	@Override
+	public Usuario logearUsuario(String user, String contra) {
+		List<Object[]> resultado = usuarioDao.logeoUsuario(user,contra);
+		if(resultado.size() != 0) {
+			for(int i=0; i< resultado.size(); i++) {
+				Object[] d = resultado.get(i);
+				Integer id = ((BigDecimal) d[0]).intValueExact();
+		        String nombre = (String) d[1];
+		        String matricula = (String) d[2];
+		        Usuario usuario = new Usuario();
+		        usuario.setId(id);
+		        usuario.setNombre(nombre);
+		        usuario.setMatricula(matricula);
+		        return usuario;
+			}
+		}
+		
 		return null;
 	}
 

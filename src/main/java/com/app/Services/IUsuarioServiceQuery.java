@@ -8,4 +8,5 @@ public interface IUsuarioServiceQuery {
 	public Usuario obtenerUsuarioByName(String username);
 	public List<Usuario> obtenerUsuarios();
 	public Usuario guardarUsuario(Usuario usuario);
+	public Usuario logearUsuario(String user, String contra);
 }
